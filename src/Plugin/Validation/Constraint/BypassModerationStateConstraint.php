@@ -2,7 +2,6 @@
 
 namespace Drupal\content_moderation_bypass\Plugin\Validation\Constraint;
 
-use Symfony\Component\Validator\Constraint;
 use Drupal\content_moderation\Plugin\Validation\Constraint\ModerationStateConstraint;
 
 /**

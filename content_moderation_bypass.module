@@ -7,9 +7,6 @@
 
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
-use Drupal\Core\Entity\EntityInterface;
-use Drupal\content_moderation_bypass\Plugin\WorkflowType\ContentModerationBypass;
 use Drupal\content_moderation_bypass\ContentModerationBypassTrait;
 
 /**
@@ -22,9 +19,9 @@ function content_moderation_bypass_form_alter(&$form, &$form_state, $form_id) {
     $entity = $form_state->getBuildInfo()['args'][0];
     $moderation_info = \Drupal::service('content_moderation.moderation_information');
     $workflow = $moderation_info->getWorkflowForEntity($entity);
-    // TODO: For some unknown reason, content_moderation uses transition labels in entity_moderation_form,
-    // but uses state labels in the node edit form (ModerationStateWidget). 
-    // Bypass returns state labels for consistency.
+    // TODO: For some reason, content_moderation uses transition labels in
+    // entity_moderation_form but uses state labels in the node edit form  -
+    // ModerationStateWidget. Bypass returns state labels for consistency.
     // See https://www.drupal.org/project/drupal/issues/3031938 for updates.
     if (\Drupal::currentUser()->hasPermission(ContentModerationBypassTrait::permissionForWorkflow($workflow))) {
       $transitions = $workflow->getTypePlugin()->getTransitionsForState($entity->get('moderation_state')->value);

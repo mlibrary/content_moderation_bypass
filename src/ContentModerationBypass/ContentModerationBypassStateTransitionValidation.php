@@ -9,8 +9,6 @@ use Drupal\workflows\Transition;
 use Drupal\workflows\WorkflowInterface;
 use Drupal\content_moderation\StateTransitionValidation;
 use Drupal\content_moderation\StateTransitionValidationInterface;
-use Drupal\content_moderation\ModerationInformationInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\content_moderation_bypass\ContentModerationBypassTrait;
 
 /**
