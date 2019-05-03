@@ -1,0 +1,7 @@
+name: 'Content Moderation Bypass'
+type: module
+description: 'Add a permission to bypass all transition state restrictions and set content to any state.'
+core: 8.x
+package: 'Content moderation'
+dependencies:
+  - content_moderation
