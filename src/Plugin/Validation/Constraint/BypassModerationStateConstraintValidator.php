@@ -14,6 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Drupal\content_moderation\Plugin\Validation\Constraint\ModerationStateConstraintValidator;
+use Drupal\content_moderation_bypass\ContentModerationBypassTrait;
 
 /**
  * Checks if a moderation state transition is valid.
@@ -27,7 +28,7 @@ class BypassModerationStateConstraintValidator extends ModerationStateConstraint
     /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
     $entity = $value->getEntity();
     $workflow = $this->moderationInformation->getWorkflowForEntity($entity);
-    if ($this->currentUser->hasPermission('bypass ' . $workflow->id() . ' transition restrictions')) {
+    if ($this->currentUser->hasPermission(ContentModerationBypassTrait::permissionForWorkflow($workflow))) {
       // remove standard moderation state violations.
       foreach ($this->context->getViolations() as $key => $violation) {
         if ($violation->getPropertyPath() == 'moderation_state') {

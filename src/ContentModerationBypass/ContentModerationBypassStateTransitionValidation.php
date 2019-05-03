@@ -11,6 +11,7 @@ use Drupal\content_moderation\StateTransitionValidation;
 use Drupal\content_moderation\StateTransitionValidationInterface;
 use Drupal\content_moderation\ModerationInformationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\content_moderation_bypass\ContentModerationBypassTrait;
 
 /**
  * Validates whether a certain state transition is allowed.
@@ -24,9 +25,9 @@ class ContentModerationBypassStateTransitionValidation extends StateTransitionVa
     $workflow = $this->moderationInfo->getWorkflowForEntity($entity);
     $current_state = $entity->moderation_state->value ? $workflow->getTypePlugin()->getState($entity->moderation_state->value) : $workflow->getTypePlugin()->getInitialState($entity);
 
-    if ($user->hasPermission('bypass ' . $workflow->id() . ' transition restrictions')) {
+    if ($user->hasPermission(ContentModerationBypassTrait::permissionForWorkflow($workflow))) {
       return array_filter($current_state->getTransitions(), function (Transition $transition) use ($workflow, $user) {
-        return $user->hasPermission('bypass ' . $workflow->id() . ' transition restrictions');
+        return $user->hasPermission(ContentModerationBypassTrait::permissionForWorkflow($workflow));
       });
     }
 
@@ -39,8 +40,8 @@ class ContentModerationBypassStateTransitionValidation extends StateTransitionVa
    * {@inheritdoc}
    */
   public function isTransitionValid(WorkflowInterface $workflow, StateInterface $original_state, StateInterface $new_state, AccountInterface $user, ContentEntityInterface $entity = NULL) {
-    if ($user->hasPermission('bypass ' . $workflow->id() . ' transition restrictions')) {
-      return $user->hasPermission('bypass ' . $workflow->id() . ' transition restrictions');
+    if ($user->hasPermission(ContentModerationBypassTrait::permissionForWorkflow($workflow))) {
+      return $user->hasPermission(ContentModerationBypassTrait::permissionForWorkflow($workflow));
     }
     if ($entity === NULL) {
       @trigger_error(sprintf('Omitting the $entity parameter from %s is deprecated and will be required in Drupal 9.0.0.', __METHOD__), E_USER_DEPRECATED);

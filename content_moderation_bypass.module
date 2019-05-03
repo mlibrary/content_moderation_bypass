@@ -10,12 +10,13 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\content_moderation_bypass\Plugin\WorkflowType\ContentModerationBypass;
+use Drupal\content_moderation_bypass\ContentModerationBypassTrait;
 
 /**
  * Implements hook_form_alter().
  */
 function content_moderation_bypass_form_alter(&$form, &$form_state, $form_id) {
-  // TODO: Find a better way to replace EntityBypassModerationForm.
+  // TODO: Find a better way to replace EntityModerationForm.
   // Currently built from a hook_entity_view in content_moderation.module.
   if ($form_id == 'content_moderation_entity_moderation_form') {
     $entity = $form_state->getBuildInfo()['args'][0];
@@ -25,7 +26,7 @@ function content_moderation_bypass_form_alter(&$form, &$form_state, $form_id) {
     // but uses state labels in the node edit form (ModerationStateWidget). 
     // Bypass returns state labels for consistency.
     // See https://www.drupal.org/project/drupal/issues/3031938 for updates.
-    if (\Drupal::currentUser()->hasPermission('bypass ' . $workflow->id() . ' transition restrictions')) {
+    if (\Drupal::currentUser()->hasPermission(ContentModerationBypassTrait::permissionForWorkflow($workflow))) {
       $transitions = $workflow->getTypePlugin()->getTransitionsForState($entity->get('moderation_state')->value);
       $options = [];
       foreach ($transitions as $transition) {

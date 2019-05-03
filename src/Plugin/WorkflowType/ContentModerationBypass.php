@@ -20,6 +20,7 @@ use Drupal\workflows\TransitionInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\content_moderation_bypass\ModerationBypassInformationInterface;
 use Drupal\workflows\Entity\Workflow;
+use Drupal\content_moderation_bypass\ContentModerationBypassTrait;
 
 /**
  * Attaches workflows to content entity types and their bundles.
@@ -69,7 +70,7 @@ class ContentModerationBypass extends ContentModeration implements ContentModera
   public function getTransitionsForState($state_id, $direction = TransitionInterface::DIRECTION_FROM) {
     foreach (Workflow::loadMultipleByType('content_moderation') as $workflow) {
       if (in_array($this->getState($state_id), $workflow->getTypePlugin()->getStates())) {
-        if ($this->currentUser->hasPermission('bypass ' . $workflow->id() . ' transition restrictions')) {
+        if ($this->currentUser->hasPermission(ContentModerationBypassTrait::permissionForWorkflow($workflow))) {
           return $this->getTransitions(array_keys($this->configuration['transitions']));
         }
       }
