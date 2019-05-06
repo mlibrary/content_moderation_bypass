@@ -16,7 +16,7 @@ trait ContentModerationBypassTrait {
    *   The permission string.
    */
   public function permissionForWorkflow(WorkflowInterface $workflow) {
-    return 'bypass ' . $workflow->id() . ' transition restrictions';
+    return t('bypass ' . $workflow->id() . ' transition restrictions');
   }
 
 }

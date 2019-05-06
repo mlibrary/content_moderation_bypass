@@ -7,33 +7,6 @@
 
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\content_moderation_bypass\ContentModerationBypassTrait;
-
-/**
- * Implements hook_form_alter().
- */
-function content_moderation_bypass_form_alter(&$form, &$form_state, $form_id) {
-  // TODO: Find a better way to replace EntityModerationForm.
-  // Currently built from a hook_entity_view in content_moderation.module.
-  if ($form_id == 'content_moderation_entity_moderation_form') {
-    $entity = $form_state->getBuildInfo()['args'][0];
-    $moderation_info = \Drupal::service('content_moderation.moderation_information');
-    $workflow = $moderation_info->getWorkflowForEntity($entity);
-    // TODO: For some reason, content_moderation uses transition labels in
-    // entity_moderation_form but uses state labels in the node edit form  -
-    // ModerationStateWidget. Bypass returns state labels for consistency.
-    // See https://www.drupal.org/project/drupal/issues/3031938 for updates.
-    if (\Drupal::currentUser()->hasPermission(ContentModerationBypassTrait::permissionForWorkflow($workflow))) {
-      $transitions = $workflow->getTypePlugin()->getTransitionsForState($entity->get('moderation_state')->value);
-      $options = [];
-      foreach ($transitions as $transition) {
-        $transition_state = $transition->to()->id();
-        $options[$transition_state] = $workflow->getTypePlugin()->getState($transition_state)->label();
-      }
-      $form['new_state']['#options'] = $options;
-    }
-  }
-}
 
 /**
  * Implements hook_entity_bundle_field_info_alter().
