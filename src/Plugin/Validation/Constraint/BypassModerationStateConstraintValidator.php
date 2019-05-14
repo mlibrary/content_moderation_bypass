@@ -18,6 +18,13 @@ class BypassModerationStateConstraintValidator extends ModerationStateConstraint
   public function validate($value, Constraint $constraint) {
     /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
     $entity = $value->getEntity();
+
+
+    // Ignore entities that are not subject to moderation anyway.
+    if (!$this->moderationInformation->isModeratedEntity($entity)) {
+      return;
+    }
+
     $workflow = $this->moderationInformation->getWorkflowForEntity($entity);
     if ($this->currentUser->hasPermission(ContentModerationBypassTrait::permissionForWorkflow($workflow))) {
       // Remove standard moderation state violations.
