@@ -4,4 +4,4 @@ description: 'Add a permission to bypass all transition state restrictions and s
 core: 8.x
 package: 'Content moderation'
 dependencies:
-  - content_moderation
+  - drupal:content_moderation
