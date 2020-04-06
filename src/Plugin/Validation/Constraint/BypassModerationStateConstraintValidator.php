@@ -19,7 +19,6 @@ class BypassModerationStateConstraintValidator extends ModerationStateConstraint
     /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
     $entity = $value->getEntity();
 
-
     // Ignore entities that are not subject to moderation anyway.
     if (!$this->moderationInformation->isModeratedEntity($entity)) {
       return;
